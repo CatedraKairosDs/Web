@@ -1,0 +1,17 @@
+
+.col-10, .col-sm-5, .col-lg-2{
+    border-style: solid ;
+    border-width: 1px;
+    margin: 5px;
+    text-align: center;
+    border-radius: 5px 5px 5px 5px;
+}
+.container{
+
+}
+*, *::before, *::after{
+    box-sizing: content-box;
+}
+.row{
+    width: fit-content;
+}
