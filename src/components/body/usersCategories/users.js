@@ -1,15 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+
 import 'bootstrap/dist/css/bootstrap.css';
-import { Table } from 'reactstrap';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import Buscador from '../body-buscar';
-import TablaFiltrados from './tabla-filtrados';
+
+import { BrowserRouter as Route } from 'react-router-dom'
+import Buscador from '../buscador';
+import TablaFiltrados from './tablaFiltrados';
 
 export default class Users extends React.Component {
-    constructor(props){
-        super(props);
-    }
     render() {
         return (
             <div>

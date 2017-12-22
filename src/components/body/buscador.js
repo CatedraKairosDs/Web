@@ -1,15 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './body-buscar.css';
+
+import './buscador.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Button, FormGroup, Label, Form, Input } from 'reactstrap';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { BrowserRouter as  Link } from 'react-router-dom'
 
 
 export default class Buscador extends React.Component {
-  constructor(props){
-    super(props);
-}
+
     render() {
       return (
         <Form class="filtrado">

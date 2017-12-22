@@ -1,9 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Table } from 'reactstrap';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import Buscador from '../body-buscar';
+
+//import Buscador from '../buscador';
 
 export default class TablaFiltrados extends React.Component {
     render() {

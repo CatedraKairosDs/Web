@@ -1,15 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-//import './css/index.css';
+//import ReactDOM from 'react-dom';
+
 import 'bootstrap/dist/css/bootstrap.css';
-import { Button, Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
-import Navigation from './navigation/navigation';
-import Buscador from './body/body-buscar';
-import Categorias from './body/body-categories';
-import Users from './body/users-categories/users';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Bar from './navigation/bar';
+//import Buscador from './body/buscador';
+import Categorias from './body/categorias';
+import Users from './body/usersCategories/users';
 
+import {connect} from 'react-redux'
+import { ActionCreators} from '../actions'
+import { bindActionCreators } from 'redux';
+//import default from 'react-router-dom/Router';
 
 const categorias= ["Entreprise Architect","Software Architect","Systems Arquitect", "Data Architect", "Big Data Architect","Cloud Architect","DevOps Engineer", "IOS/Android Engineer","QA Engineer","Big Data Engineer","QA Analyst","Data Scientist","IOT Expert","Back-end", "Front-end","Layout","UX Designer"  ]  
 class App extends React.Component {
@@ -18,7 +21,7 @@ class App extends React.Component {
             <div>
                 <Router>
                     <div>
-                    <Navigation/>
+                    <Bar/>
                     <Route exact path="/" component={Inicio} />
                     {/* <Route exact path="/buscador" component={Buscador} /> */}
                     <Route exact path="/categorias" component={Categorias} />
@@ -46,4 +49,9 @@ function RouterTypeUsers(props){
    );
  }
 
-export default App;
+ function mapDispatchToProps(dispatch){
+     return bindActionCreators(ActionCreators,dispatch);
+ }
+
+export default connect(()=>{return {}},mapDispatchToProps)(App);
+//export default connect(mapSatteToprops)(Bar)

@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './body-categories.css';
+
+import './categorias.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Container, Row, Col } from 'reactstrap';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Link } from 'react-router-dom'
 
 
 export default class Categorias extends React.Component {
