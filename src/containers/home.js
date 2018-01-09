@@ -44,65 +44,73 @@ class Home extends Component {
     }
     profiles() {
         //console.log(this.props.searchedProfiles)
-        const searched = this.props.searchedProfiles
-        const keys = Object.keys(searched);
-        const profiles = keys.map(key => searched[key])
-        profiles.shift();
+        if(this.state.render===true){
+            const searched = this.props.searchedProfiles
+            const keys = Object.keys(searched);
+            const profiles = keys.map(key => searched[key])
+            profiles.shift();
 
-        const listaProfiles = profiles.map((profile, i) =>
-            <tr key={profile._id}>
-                <th scope="row">{i + 1}</th>
-                <td>{profile.name}</td>
-                <td>{profile.puesto}</td>
-                <td>{profile.label}</td>
-            </tr>
-        )
-        if(profiles[0]!=null){
-            return (
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Nº</th>
-                            <th>Name</th>
-                            <th>Puesto</th>
-                            <th>Label</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {listaProfiles}
-                    </tbody>
-                </Table>
+            const listaProfiles = profiles.map((profile, i) =>
+                <tr key={profile._id}>
+                    <th scope="row">{i + 1}</th>
+                    <td>{profile.name}</td>
+                    <td>{profile.puesto}</td>
+                    <td>{profile.label}</td>
+                </tr>
             )
+            if(profiles[0]!=null){
+                return (
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Nº</th>
+                                <th>Name</th>
+                                <th>Puesto</th>
+                                <th>Label</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {listaProfiles}
+                        </tbody>
+                    </Table>
+                )
+            }else{
+                
+            }
         }else{
-            return 
+            return(<div>{}</div>)
         }
-        
             
     }
     pages(){
-        const searched = this.props.searchedProfiles
-        const keys = Object.keys(searched);
-        const profiles = keys.map(key => searched[key])
+        if(this.state.render===true){
+            const searched = this.props.searchedProfiles
+            const keys = Object.keys(searched);
+            const profiles = keys.map(key => searched[key])
 
-        const totalPages=profiles[0];
-        const listPages=[];
-        for(var i =0; i<totalPages;i++){
-            listPages[i]=i
+            const totalPages=profiles[0];
+            const listPages=[];
+            for(var i =0; i<totalPages;i++){
+                listPages[i]=i
+            }
+            const numeroPaginas= listPages.map((page)=>
+                <PaginationItem key={page+1}>
+                    <PaginationLink onClick={() => this.searchPressed(page+1)}>{page+1} </PaginationLink>
+                </PaginationItem>
+
+            )
+            return(
+                <Pagination margin-left=""size="sm">
+                    {numeroPaginas}
+                </Pagination>
+            )
+        }else{
+            return(<div>{}</div>)
         }
-        const numeroPaginas= listPages.map((page)=>
-            <PaginationItem key={page+1}>
-                <PaginationLink onClick={() => this.searchPressed(page+1)}>{page+1} </PaginationLink>
-            </PaginationItem>
-
-        )
-        return(
-            <Pagination margin-left=""size="sm">
-                {numeroPaginas}
-            </Pagination>
-        )
     }
+    
     dropdownPuesto(){
-        const puestos=['Front-End','Back-End', 'UX Designer']
+        const puestos=['Front-End','Back-End', 'UX Designer','Arquitecto de Software']
         const listaPuestos=puestos.map((puesto)=>
         <div>
         <DropdownItem key={puesto} onClick={()=>this.setState({puesto: puesto})}>
