@@ -13,14 +13,21 @@ class Home extends Component {
         this.toggle = this.toggle.bind(this);
         this.toggle2 = this.toggle2.bind(this);
         this.renderList=this.renderList.bind(this);
+        this.pageNumberAdd=this.pageNumberAdd.bind(this);
+        this.pageNumberSubstract=this.pageNumberSubstract.bind(this);
+        this.pageNumber=this.pageNumber.bind(this);
+        this.totalPages=this.totalPages.bind(this);
         this.state = {
             puesto: 'Puesto',
             label:'Label',
+            pageNumber: 1,
+            totalPages: 12,
             dropdownOpen: false,
             dropdownOpen2: false,
             render: false
         };
       }
+
       renderList(){
         this.setState({
             render: true
@@ -36,14 +43,58 @@ class Home extends Component {
           dropdownOpen2: !this.state.dropdownOpen2
         });
       }
-    
+      pageNumber(page){
+        this.setState({
+            pageNumber: page
+          });
+      }
+      totalPages(page){
+        this.setState({
+            totalPages: page
+          });
+      }
+      pageNumberAdd(page){
+        if (page<this.state.totalPages){
+            this.setState({
+                pageNumber: this.state.pageNumber +1
+            });
+        }
+      }
+      pageNumberSubstract(page){
+        if (page>1){
+            this.setState({
+                pageNumber: this.state.pageNumber -1
+            });
+        }
+      }
 
-    searchPressed(page) {
+    searchPressed(page,sub,add,initTotalpages) {
+        this.pageNumber(page)
+        if(sub===1){
+            this.pageNumberSubstract(page)
+        }
+        if(add===1){
+            this.pageNumberAdd(page)
+        }
         this.renderList()
-        this.props.fetchProfiles(this.state.label,this.state.puesto, page);
+        this.props.fetchProfiles(this.state.label,this.state.puesto, this.state.pageNumber);
+        //se pone un timeout ya que tarda en hacer el fetch y obtener el numero de paginas totales q necesitamos
+        if(initTotalpages===1){
+            setTimeout(() => {
+                    const searched = this.props.searchedProfiles
+                    const keys = Object.keys(searched);
+                    const profiles = keys.map(key => searched[key])
+                    const totalPages=profiles[0];
+                    this.totalPages(totalPages);
+                    console.log(this.state.totalPages)
+            }, 600);
+        }
+        
+    }
+    deleteProfile(name) {
+            this.props.fetchProfiles(name)
     }
     profiles() {
-        //console.log(this.props.searchedProfiles)
         if(this.state.render===true){
             const searched = this.props.searchedProfiles
             const keys = Object.keys(searched);
@@ -56,6 +107,10 @@ class Home extends Component {
                     <td>{profile.name}</td>
                     <td>{profile.puesto}</td>
                     <td>{profile.label}</td>
+                    <td><Button  color="danger" onClick={() => {
+                        if (window.confirm(`¿Seguro que quieres borrar el usuario: `+profile.name+`?`))
+                        {this.deleteProfile(profile.name)};}}>Borrar</Button>
+                    </td>
                 </tr>
             )
             if(profiles[0]!=null){
@@ -64,9 +119,10 @@ class Home extends Component {
                         <thead>
                             <tr>
                                 <th>Nº</th>
-                                <th>Name</th>
+                                <th>Nombre</th>
                                 <th>Puesto</th>
                                 <th>Label</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,26 +138,34 @@ class Home extends Component {
         }
             
     }
+    
     pages(){
         if(this.state.render===true){
-            const searched = this.props.searchedProfiles
-            const keys = Object.keys(searched);
-            const profiles = keys.map(key => searched[key])
-
-            const totalPages=profiles[0];
             const listPages=[];
-            for(var i =0; i<totalPages;i++){
+            let pagActual=this.state.pageNumber;
+            let pagPrevia=pagActual;
+            let pagPost=pagActual+1;
+
+            for(var i =pagPrevia; i<pagPost;i++){
+                if(i<=this.state.totalPages){
                 listPages[i]=i
+                }
             }
             const numeroPaginas= listPages.map((page)=>
                 <PaginationItem key={page+1}>
-                    <PaginationLink onClick={() => this.searchPressed(page+1)}>{page+1} </PaginationLink>
+                    <PaginationLink onClick={() => this.searchPressed(page,0,0)}>{page} </PaginationLink>
                 </PaginationItem>
 
             )
             return(
                 <Pagination margin-left=""size="sm">
+                    <PaginationItem>
+                        <PaginationLink previous onClick={()=> this.searchPressed(this.state.pageNumber,1,0)} />
+                    </PaginationItem>
                     {numeroPaginas}
+                    <PaginationItem>
+                        <PaginationLink next onClick={()=> this.searchPressed(this.state.pageNumber,0,1)} />
+                    </PaginationItem>
                 </Pagination>
             )
         }else{
@@ -156,7 +220,7 @@ class Home extends Component {
                     <DropdownToggle caret color="info" />
                     {this.dropdownPuesto()}
                 </ButtonDropdown>
-                <Button id="bt" color="primary" size="md" onClick={() => this.searchPressed(1)}>
+                <Button id="bt" color="primary" size="md" onClick={() => this.searchPressed(1,0,0,1)}>
                     Buscar
                 </Button>
                 <Button id="bt" color="danger" size="md" onClick={()=>this.setState({label: 'Label',puesto: 'Puesto', render: false })}>
@@ -174,7 +238,8 @@ class Home extends Component {
 }
 function mapStateToProps(state) {
     return {
-        searchedProfiles: state.searchedProfiles
+        searchedProfiles: state.searchedProfiles,
+        deleteProfile: state.deleteProfile
     }
 }
 export default connect(mapStateToProps)(Home);

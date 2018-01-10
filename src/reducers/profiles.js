@@ -14,6 +14,11 @@ export const searchedProfiles= createReducer({}, {
         return newState;
     }
 });
+export const deletedProfile= createReducer({}, {
+    [types.DELETE_PROFILE](state,action){
+        return action.profile.name
+    }
+});
 
 export const profileCount=  createReducer(0,{
     [types.SET_SEARCHED_PROFILES](state,action){

@@ -34,11 +34,35 @@ export function fetchProfiles(...query){
             })
         });
 }
-
 export function setSearchedProfiles({profiles},{pages}){
     return{
         type: types.SET_SEARCHED_PROFILES,
         profiles,
         pages
+    }
+}
+
+export function fetchDeleteProfile(query){
+    return(
+        (dispatch, getState)=>{
+            let params=[
+                `name=${query}`,
+            ].join('&'); //los unimos con un &
+            //llamamos al metodo get con la url completa con los parametros 
+
+            return Api.delete(`/api-linkedin/v1/profiles/?${params}`).then(resp =>{
+               console.log(resp.data);
+                //console.log(resp.meta.totalpages);
+                dispatch(setDeleteProfile({profile: query}));
+            }).catch((ex)=>{
+                console.log(ex);
+            })
+        });
+}
+
+export function setDeleteProfile({profile}){
+    return{
+        type: types.DELETE_PROFILE,
+        profile
     }
 }
