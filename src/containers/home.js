@@ -21,7 +21,7 @@ class Home extends Component {
             puesto: 'Puesto',
             label:'Label',
             pageNumber: 1,
-            totalPages: 12,
+            totalPages: 100000, //es muy alto para temas de paginacion, en cuanto se hace el fetch se pone a su valor real
             dropdownOpen: false,
             dropdownOpen2: false,
             render: false
@@ -56,39 +56,56 @@ class Home extends Component {
       pageNumberAdd(page){
         if (page<this.state.totalPages){
             this.setState({
-                pageNumber: this.state.pageNumber +1
+                pageNumber: page +1,
             });
+        }else {
+            this.pageNumber(page)
         }
       }
       pageNumberSubstract(page){
         if (page>1){
             this.setState({
-                pageNumber: this.state.pageNumber -1
+                pageNumber: page -1,
             });
+        }else {
+            this.pageNumber(page)
         }
       }
 
     searchPressed(page,sub,add,initTotalpages) {
-        this.pageNumber(page)
+        let prox=page;
         if(sub===1){
             this.pageNumberSubstract(page)
+            prox=prox-1;
         }
-        if(add===1){
+        else if(add===1){
             this.pageNumberAdd(page)
+            prox=prox+1;
+        } else{
+            this.pageNumber(page)
         }
         this.renderList()
-        this.props.fetchProfiles(this.state.label,this.state.puesto, this.state.pageNumber);
-        //se pone un timeout ya que tarda en hacer el fetch y obtener el numero de paginas totales q necesitamos
-        if(initTotalpages===1){
-            setTimeout(() => {
-                    const searched = this.props.searchedProfiles
-                    const keys = Object.keys(searched);
-                    const profiles = keys.map(key => searched[key])
-                    const totalPages=profiles[0];
-                    this.totalPages(totalPages);
-                    console.log(this.state.totalPages)
-            }, 600);
+        this.props.fetchProfiles(this.state.label,this.state.puesto, prox).then( () =>{
+            const searched = this.props.searchedProfiles
+            const keys = Object.keys(searched);
+            const profiles = keys.map(key => searched[key])
+            const totalPages=profiles[0];
+            this.totalPages(totalPages);
+            console.log(this.state.totalPages)
         }
+
+        );
+        //se pone un timeout ya que tarda en hacer el fetch y obtener el numero de paginas totales q necesitamos
+        // if(initTotalpages===1){
+        //     setTimeout(() => {
+        //             const searched = this.props.searchedProfiles
+        //             const keys = Object.keys(searched);
+        //             const profiles = keys.map(key => searched[key])
+        //             const totalPages=profiles[0];
+        //             this.totalPages(totalPages-5); // cuidao con esto lo esta tocando Roberto (por el -5)
+        //             console.log(this.state.totalPages)
+        //     }, 600);
+        // }
         
     }
     deleteProfile(name) {
@@ -152,8 +169,8 @@ class Home extends Component {
                 }
             }
             const numeroPaginas= listPages.map((page)=>
-                <PaginationItem key={page+1}>
-                    <PaginationLink onClick={() => this.searchPressed(page,0,0)}>{page} </PaginationLink>
+                <PaginationItem key={page+2017}>
+                    <PaginationLink onClick={() => this.searchPressed(this.state.pageNumber,0,0)}>{this.state.pageNumber} </PaginationLink>
                 </PaginationItem>
 
             )
@@ -174,10 +191,10 @@ class Home extends Component {
     }
     
     dropdownPuesto(){
-        const puestos=['Front-End','Back-End', 'UX Designer','Arquitecto de Software']
+        const puestos=['Front-End','Back-End', 'UX Designer','Arquitecto de Software', 'Scrum Master']
         const listaPuestos=puestos.map((puesto)=>
-        <div>
-        <DropdownItem key={puesto} onClick={()=>this.setState({puesto: puesto})}>
+        <div key={puesto}>
+        <DropdownItem onClick={()=>this.setState({puesto: puesto})}>
             {puesto}
         </DropdownItem>
         <DropdownItem divider/>
@@ -192,8 +209,8 @@ class Home extends Component {
     dropdownLabel(){
         const labels=['Accept','Maybe', 'Refuse']
         const listaLabels= labels.map((label)=>
-        <div>
-        <DropdownItem key={label} onClick={()=>this.setState({label: label})}>
+        <div key={label}>
+        <DropdownItem  onClick={()=>this.setState({label: label})}>
             {label}
         </DropdownItem>
         <DropdownItem divider/>
@@ -223,7 +240,7 @@ class Home extends Component {
                 <Button id="bt" color="primary" size="md" onClick={() => this.searchPressed(1,0,0,1)}>
                     Buscar
                 </Button>
-                <Button id="bt" color="danger" size="md" onClick={()=>this.setState({label: 'Label',puesto: 'Puesto', render: false })}>
+                <Button id="bt" color="danger" size="md" onClick={()=>this.setState({label: 'Label',puesto: 'Puesto', render: false, pageNumber: 1, totalPages: 100000, })}>
                     Cancelar
                 </Button>
                 </div>
